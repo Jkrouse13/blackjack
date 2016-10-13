@@ -23,7 +23,7 @@ class Game
   def play
     prepare_deck
     deal
-    rounds if !blackjack
+    rounds if !blackjack!
     winner
     rematch?
   end
@@ -52,61 +52,76 @@ class Game
     if need == "hit"
       hit(player_hand)
     end
-    dealer_turn
-    show_dealer_hand
+    unless blackjack! || bust!
+      dealer_turn
+      show_dealer_hand
+    end
   end
 
 
   def dealer_turn
     dealer_total_value
-    if dealer_value < 16
-      hit(dealer_hand)
-      dealer_turn
+    unless dealer_bust
+      if dealer_value < 16
+        hit(dealer_hand)
+        dealer_turn
+      end
     end
   end
 
   def hit(active_player)
     if active_player == player_hand
-      player_hand << deck_o_cards.draw
-      player_total_value
-      show_hand
-      puts "#{player_value} with#{phand}"
-      puts "Another (hit / stay)"
-      another = gets.chomp.downcase
-      if another == "hit"
-        hit(active_player)
+      unless blackjack! || bust!
+        player_hand << deck_o_cards.draw
+        player_total_value
+        show_hand
+        puts "#{player_value} with #{phand}"
+        puts "Another (hit / stay)"
+        another = gets.chomp.downcase
+        if another == "hit"
+          hit(active_player)
+        end
       end
     else
       dealer_hand << deck_o_cards.draw
+      puts dealer_hand[1,2]
     end
   end
 
-  def blackjack
+  def blackjack!
     player_value == 21
   end
 
-  def bust
+  def bust!
     player_value > 21
   end
 
+  def dealer_bust
+    dealer_value > 21
+  end
+
   def winner
-    if blackjack
+    if blackjack!
       puts "Blackjack!!! You win!!!"
-      puts "Your final hand: #{phand}"
-      puts "The dealer's final hand: #{dealer_hand} "
-    elsif bust
+      final_hands
+    elsif bust!
       puts "Bust! Sorry you lose!"
-      puts "Your final hand: #{phand}"
-      puts "The dealer's final hand: #{final_dealer_hand} "
+      final_hands
     elsif player_value > dealer_value
       puts "Your #{player_value} beats the dealer's #{dealer_value}!"
-      puts "Your final hand: #{phand.join("")}"
-      puts "The dealer's final hand: #{final_dealer_hand} "
+      final_hands
+    elsif dealer_bust
+      puts "Bust!! The dealer lost!  You win!!"
+      final_hands
     else
       puts "The dealer's #{dealer_value} beats your #{player_value}, sorry."
-      puts "Your final hand: #{phand}"
-      puts "The dealer's final hand: #{final_dealer_hand} "
+      final_hands
     end
+  end
+
+  def final_hands
+    puts "Your final hand: #{player_value} from #{phand}"
+    puts "The dealer's final hand: #{dealer_value} from #{final_dealer_hand} "
   end
 
   def rematch?
