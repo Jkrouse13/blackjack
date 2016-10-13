@@ -19,13 +19,13 @@ class Card
   end
 
   def card_value
-    if face == "A"
+    if face == "Ace"
       self.value = 11
-    elsif face == "K"
+    elsif face == "King"
       self.value = 10
-    elsif face == "Q"
+    elsif face == "Queen"
       self.value = 10
-    elsif face == "J"
+    elsif face == "Jack"
       self.value = 10
     else
       self.value = face.to_i

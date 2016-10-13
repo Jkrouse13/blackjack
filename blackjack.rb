@@ -1,7 +1,7 @@
 require_relative 'deck'
 
 class Game
-  attr_accessor :player_hand, :dealer_hand, :deck_o_cards, :player_value, :dealer_value, :phand
+  attr_accessor :player_hand, :dealer_hand, :deck_o_cards, :player_value, :dealer_value, :phand, :final_dealer_hand
 
   def initialize
     self.player_hand = []
@@ -9,6 +9,7 @@ class Game
     self.player_value = 0
     self.dealer_value = 0
     self.phand = []
+    self.final_dealer_hand = []
   end
 
   def player_total_value
@@ -52,6 +53,7 @@ class Game
       hit(player_hand)
     end
     dealer_turn
+    show_dealer_hand
   end
 
 
@@ -90,14 +92,20 @@ class Game
   def winner
     if blackjack
       puts "Blackjack!!! You win!!!"
+      puts "Your final hand: #{phand}"
+      puts "The dealer's final hand: #{dealer_hand} "
     elsif bust
       puts "Bust! Sorry you lose!"
+      puts "Your final hand: #{phand}"
+      puts "The dealer's final hand: #{final_dealer_hand} "
     elsif player_value > dealer_value
       puts "Your #{player_value} beats the dealer's #{dealer_value}!"
-      puts "Your final hand: #{phand}"
-      puts "The dealer's final hand: #{} "
+      puts "Your final hand: #{phand.join("")}"
+      puts "The dealer's final hand: #{final_dealer_hand} "
     else
       puts "The dealer's #{dealer_value} beats your #{player_value}, sorry."
+      puts "Your final hand: #{phand}"
+      puts "The dealer's final hand: #{final_dealer_hand} "
     end
   end
 
@@ -113,10 +121,12 @@ class Game
   end
 
   def show_hand
-    self.phand = player_hand.collect {|card| card.to_s}
+    self.phand = player_hand.collect {|card| card.to_s}.join(" & ")
   end
 
-
+  def show_dealer_hand
+    self.final_dealer_hand = dealer_hand.collect {|card| card.to_s}.join(" & ")
+  end
 
 end
 
