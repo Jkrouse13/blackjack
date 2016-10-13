@@ -46,15 +46,17 @@ class Game
     show_hand
     puts "#{player_total_value}"
     puts "You have #{phand}, the dealer shows #{dealer_hand[1]}"
-    puts "Would you like a hit? (hit / stay)"
-    need = gets.chomp.downcase
-
-    if need == "hit"
-      hit(player_hand)
-    end
     unless blackjack! || bust!
-      dealer_turn
-      show_dealer_hand
+      puts "Would you like a hit? (hit / stay)"
+      need = gets.chomp.downcase
+
+      if need == "hit"
+        hit(player_hand)
+      end
+      unless blackjack! || bust!
+        dealer_turn
+        show_dealer_hand
+      end
     end
   end
 
@@ -76,10 +78,12 @@ class Game
         player_total_value
         show_hand
         puts "#{player_value} with #{phand}"
-        puts "Another (hit / stay)"
-        another = gets.chomp.downcase
-        if another == "hit"
-          hit(active_player)
+        unless blackjack! || bust!
+          puts "Another (hit / stay)"
+          another = gets.chomp.downcase
+          if another == "hit"
+            hit(active_player)
+          end
         end
       end
     else
@@ -109,6 +113,9 @@ class Game
       final_hands
     elsif player_value > dealer_value
       puts "Your #{player_value} beats the dealer's #{dealer_value}!"
+      final_hands
+    elsif player_value == dealer_value
+      puts "You win the tie! of #{player_value} to #{dealer_value}"
       final_hands
     elsif dealer_bust
       puts "Bust!! The dealer lost!  You win!!"
