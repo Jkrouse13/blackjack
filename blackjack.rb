@@ -29,7 +29,7 @@ class Game
   def play
     prepare_deck
     deal
-    rounds unless blackjack!
+    rounds unless blackjack! || dealer_blackjack
     winner
     rematch?
   end
@@ -55,7 +55,7 @@ class Game
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
       hit(player_hand) if need == 'hit'
-      unless blackjack! || bust!
+      unless blackjack! || bust! || player_six_win
         dealer_turn
         show_dealer_hand
       end
@@ -74,12 +74,12 @@ class Game
 
   def hit(active_player)
     if active_player == player_hand
-      unless blackjack! || bust!
+      unless blackjack! || bust! || player_six_win
         player_hand << deck_o_cards.draw
         player_total_value
         show_hand
         puts "#{player_value} with #{phand}"
-        unless blackjack! || bust!
+        unless blackjack! || bust! || player_six_win
           puts 'Another (hit / stay)'
           another = gets.chomp.downcase
           hit(active_player) if another == 'hit'
@@ -111,6 +111,14 @@ class Game
     dealer_value > 21
   end
 
+  def player_six_win
+    player_hand.length == 6 && player_value < 21
+  end
+
+  def dealer_blackjack
+    dealer_value == 21
+  end
+
   def winner
     if blackjack!
       puts 'Blackjack!!! You win!!!'
@@ -118,17 +126,31 @@ class Game
     elsif bust!
       puts 'Bust! Sorry you lose!'
       final_hands
+    elsif player_six_win
+      puts 'Charlie!  You win with 6 cards and staying under 21'
+      final_hands
     elsif player_value > dealer_value
       puts "Your #{player_value} beats the dealer's #{dealer_value}!"
       final_hands
     elsif player_value == dealer_value
-      puts "You win the tie! of #{player_value} to #{dealer_value}"
-      final_hands
+      tie_breaker
     elsif dealer_bust
       puts 'Bust!! The dealer lost!  You win!!'
       final_hands
     else
       puts "The dealer's #{dealer_value} beats your #{player_value}, sorry."
+      final_hands
+    end
+  end
+
+  def tie_breaker
+    if dealer_hand.length > player_hand.length
+      puts "You lose the tie with #{player_hand.length} cards."
+      puts "The dealer had #{dealer_hand.length} cards!"
+      final_hands
+    else
+      puts "You win the tie with #{player_hand.length} cards!"
+      puts "The dealer had #{dealer_hand.length} cards."
       final_hands
     end
   end
