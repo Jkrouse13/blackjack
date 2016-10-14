@@ -1,7 +1,13 @@
 require_relative 'deck'
 
 class Game
-  attr_accessor :player_hand, :dealer_hand, :deck_o_cards, :player_value, :dealer_value, :phand, :final_dealer_hand
+  attr_accessor :player_hand,
+                :dealer_hand,
+                :deck_o_cards,
+                :player_value,
+                :dealer_value,
+                :phand,
+                :final_dealer_hand
 
   def initialize
     self.player_hand = []
@@ -48,7 +54,6 @@ class Game
     unless blackjack! || bust!
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
-
       hit(player_hand) if need == 'hit'
       unless blackjack! || bust!
         dealer_turn

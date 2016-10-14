@@ -1,5 +1,4 @@
 class Card
-
   include Comparable
 
   def self.faces
@@ -19,7 +18,7 @@ class Card
   end
 
   def card_value
-    if face == "Ace"
+    if face == 'Ace'
       self.value = 11
     elsif %w(King Queen Jack).include? face
       self.value = 10
@@ -28,15 +27,15 @@ class Card
     end
   end
 
-  def > (other)
+  def >(other)
     value > other.value
   end
 
-  def < (other)
+  def <(other)
     value < other.value
   end
 
-  def + (other)
+  def +(other)
     value + other.value
   end
 
