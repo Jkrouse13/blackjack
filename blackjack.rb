@@ -1,4 +1,5 @@
 require_relative 'deck'
+require_relative 'shoe'
 
 class Game
   attr_accessor :player_hand,
@@ -37,7 +38,7 @@ class Game
   end
 
   def prepare_deck
-    self.deck_o_cards = Deck.new
+    self.deck_o_cards = Shoe.new
     self.player_hand = []
     self.dealer_hand = []
     self.player_value = 0

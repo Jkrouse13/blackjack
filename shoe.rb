@@ -1,5 +1,5 @@
 require_relative 'card'
-class Deck
+class Shoe < Deck
   attr_accessor :card_holder
 
   def initialize
@@ -9,11 +9,13 @@ class Deck
 
   def create_deck
     self.card_holder = []
+    7.times do
       Card.faces.each do |face|
         Card.suits.each do |suit|
           card_holder << Card.new(face, suit)
         end
       end
+    end
   end
 
   def shuffle_cards
