@@ -3,7 +3,7 @@ class Card
   include Comparable
 
   def self.faces
-    %w(A 2 3 4 5 6 7 8 9 10 J Q K)
+    %w(Ace 2 3 4 5 6 7 8 9 10 Jack Queen King)
   end
 
   def self.suits
@@ -33,15 +33,15 @@ class Card
   end
 
   def > (other)
-    value.to_i > other.value.to_i
+    value > other.value
   end
 
   def < (other)
-    value.to_i < other.value.to_i
+    value < other.value
   end
 
   def + (other)
-    value.to_i + other.value.to_i
+    value + other.value
   end
 
   def to_s

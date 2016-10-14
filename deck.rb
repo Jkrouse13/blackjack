@@ -8,12 +8,10 @@ class Deck
   end
 
   def create_deck
-    faces =   %w(Ace 2 3 4 5 6 7 8 9 10 Jack Queen King)
-    suits = %w(Clubs Spades Hearts Diamonds)
     self.card_holder = []
 
-    faces.each do |face|
-      suits.each do |suit|
+    Card.faces.each do |face|
+      Card.suits.each do |suit|
         card_holder<< Card.new(face, suit)
       end
     end
