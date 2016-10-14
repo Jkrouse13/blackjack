@@ -7,15 +7,17 @@ class Game
                 :player_value,
                 :dealer_value,
                 :phand,
-                :final_dealer_hand
+                :final_dealer_hand,
+                :win_tracker,
+                :loss_tracker,
+                :blackjacks,
+                :busts
 
   def initialize
-    self.player_hand = []
-    self.dealer_hand = []
-    self.player_value = 0
-    self.dealer_value = 0
-    self.phand = []
-    self.final_dealer_hand = []
+    self.win_tracker = 0
+    self.loss_tracker = 0
+    self.blackjacks = 0
+    self.busts = 0
   end
 
   def player_total_value
@@ -36,6 +38,12 @@ class Game
 
   def prepare_deck
     self.deck_o_cards = Deck.new
+    self.player_hand = []
+    self.dealer_hand = []
+    self.player_value = 0
+    self.dealer_value = 0
+    self.phand = []
+    self.final_dealer_hand = []
   end
 
   def deal
@@ -51,6 +59,7 @@ class Game
     show_hand
     puts "You have #{player_value} with #{phand}."
     puts "The dealer shows #{dealer_hand[1]}"
+    player_ace_choice
     unless blackjack! || bust!
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
@@ -79,6 +88,7 @@ class Game
         player_total_value
         show_hand
         puts "#{player_value} with #{phand}"
+        player_ace_choice
         unless blackjack! || bust! || player_six_win
           puts 'Another (hit / stay)'
           another = gets.chomp.downcase
@@ -93,10 +103,12 @@ class Game
   def dealer_hit
     show_dealer_hand
     puts "The dealer shows: #{final_dealer_hand}"
+    gets
     dealer_hand << deck_o_cards.draw
     puts 'The dealer takes a hit'
     puts 'The dealer is now showing:'
     puts dealer_hand
+    gets
   end
 
   def blackjack!
@@ -122,23 +134,31 @@ class Game
   def winner
     if blackjack!
       puts 'Blackjack!!! You win!!!'
+      self.blackjacks += 1
+      self.win_tracker += 1
       final_hands
     elsif bust!
       puts 'Bust! Sorry you lose!'
+      self.busts += 1
+      self.loss_tracker += 1
       final_hands
     elsif player_six_win
       puts 'Charlie!  You win with 6 cards and staying under 21'
+      self.win_tracker += 1
       final_hands
     elsif player_value > dealer_value
       puts "Your #{player_value} beats the dealer's #{dealer_value}!"
+      self.win_tracker += 1
       final_hands
     elsif player_value == dealer_value
       tie_breaker
     elsif dealer_bust
       puts 'Bust!! The dealer lost!  You win!!'
+      self.win_tracker += 1
       final_hands
     else
       puts "The dealer's #{dealer_value} beats your #{player_value}, sorry."
+      self.loss_tracker += 1
       final_hands
     end
   end
@@ -147,10 +167,12 @@ class Game
     if dealer_hand.length > player_hand.length
       puts "You lose the tie with #{player_hand.length} cards."
       puts "The dealer had #{dealer_hand.length} cards!"
+      self.loss_tracker += 1
       final_hands
     else
       puts "You win the tie with #{player_hand.length} cards!"
       puts "The dealer had #{dealer_hand.length} cards."
+      self.win_tracker += 1
       final_hands
     end
   end
@@ -160,16 +182,35 @@ class Game
     show_dealer_hand
     puts "Your final hand: #{player_value} from #{phand}"
     puts "The dealer's final hand: #{dealer_value} from #{final_dealer_hand} "
+    combined_stats
+  end
+
+  def combined_stats
+    puts "You have won: #{win_tracker} games!"
+    puts "You have lost: #{loss_tracker} games!"
+    puts "You have had: #{blackjacks} blackjacks!"
+    puts "You have busted: #{busts} times!"
   end
 
   def rematch?
     puts 'Would you like to play a new game? (y / n)'
     desire = gets.chomp.downcase
     if desire == 'y'
-      initialize
       play
     else
       exit
+    end
+  end
+
+  def player_ace_choice
+    while player_hand.include? "Ace"
+      puts "Would you like your Ace to be worth 1 or 11? (1 / 11)"
+      player_choice = gets.chomp
+      if player_choice == 1
+        card.value = 1
+      else
+        card.value = 11
+      end
     end
   end
 
