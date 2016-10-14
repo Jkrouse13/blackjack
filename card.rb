@@ -21,11 +21,7 @@ class Card
   def card_value
     if face == "Ace"
       self.value = 11
-    elsif face == "King"
-      self.value = 10
-    elsif face == "Queen"
-      self.value = 10
-    elsif face == "Jack"
+    elsif %w(King Queen Jack).include? face
       self.value = 10
     else
       self.value = face.to_i

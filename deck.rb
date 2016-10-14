@@ -5,6 +5,7 @@ class Deck
 
   def initialize
     create_deck
+    shuffle_cards
   end
 
   def create_deck

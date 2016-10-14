@@ -30,7 +30,6 @@ class Game
 
   def prepare_deck
     self.deck_o_cards = Deck.new
-    deck_o_cards.shuffle_cards
   end
 
   def deal
@@ -82,11 +81,17 @@ class Game
         end
       end
     else
-      dealer_hand << deck_o_cards.draw
-      puts 'The dealer takes a hit'
-      puts 'The dealer is now showing:'
-      puts dealer_hand[1, 2]
+      dealer_hit
     end
+  end
+
+  def dealer_hit
+    show_dealer_hand
+    puts "The dealer shows: #{final_dealer_hand}"
+    dealer_hand << deck_o_cards.draw
+    puts 'The dealer takes a hit'
+    puts 'The dealer is now showing:'
+    puts dealer_hand
   end
 
   def blackjack!
