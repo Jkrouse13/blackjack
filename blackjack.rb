@@ -32,7 +32,7 @@ class Game
   def play
     prepare_deck
     deal
-    rounds unless blackjack! || dealer_blackjack
+    rounds unless blackjack? || dealer_blackjack?
     winner
     rematch?
   end
@@ -61,15 +61,13 @@ class Game
     puts "You have #{player_value} with #{phand}."
     puts "The dealer shows #{dealer_hand[1]}"
     player_ace_choice
-    unless blackjack! || bust!
+    return unless blackjack? || bust?
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
       player_hit if need == 'hit'
-      unless blackjack! || bust! || player_six_win
+      return unless blackjack? || bust? || player_six_win
         dealer_turn
         show_dealer_hand
-      end
-    end
   end
 
   def dealer_turn
@@ -83,38 +81,36 @@ class Game
   end
 
   def player_hit
-    unless blackjack! || bust! || player_six_win
+    return unless blackjack? || bust? || player_six_win
       player_hand << deck_o_cards.draw
       player_total_value
       show_hand
       puts "#{player_value} with #{phand}"
       player_ace_choice
-      unless blackjack! || bust! || player_six_win
+      return unless blackjack? || bust? || player_six_win
         puts 'Another (hit / stay)'
         another = gets.chomp.downcase
         player_hit if another == 'hit'
-      end
-    end
   end
 
   def dealer_hit
     show_dealer_hand
     puts "The dealer shows: #{final_dealer_hand}"
-    puts "(return to continue)"
+    puts '(return to continue)'
     gets
     dealer_hand << deck_o_cards.draw
     puts 'The dealer takes a hit'
     puts 'The dealer is now showing:'
     puts dealer_hand
-    puts "(return to continue)"
+    puts '(return to continue)'
     gets
   end
 
-  def blackjack!
+  def blackjack?
     player_value == 21
   end
 
-  def bust!
+  def bust?
     player_value > 21
   end
 
@@ -126,17 +122,17 @@ class Game
     player_hand.length == 6 && player_value < 21
   end
 
-  def dealer_blackjack
+  def dealer_blackjack?
     dealer_value == 21
   end
 
   def winner
-    if blackjack!
+    if blackjack?
       puts 'Blackjack!!! You win!!!'
       self.blackjacks += 1
       self.win_tracker += 1
       final_hands
-    elsif bust!
+    elsif bust?
       puts 'Bust! Sorry you lose!'
       self.busts += 1
       self.loss_tracker += 1
