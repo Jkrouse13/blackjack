@@ -64,7 +64,7 @@ class Game
     unless blackjack! || bust!
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
-      hit(player_hand) if need == 'hit'
+      player_hit if need == 'hit'
       unless blackjack! || bust! || player_six_win
         dealer_turn
         show_dealer_hand
@@ -76,39 +76,37 @@ class Game
     dealer_total_value
     unless dealer_bust
       if dealer_value < 16
-        hit(dealer_hand)
+        dealer_hit
         dealer_turn
       end
     end
   end
 
-  def hit(active_player)
-    if active_player == player_hand
+  def player_hit
+    unless blackjack! || bust! || player_six_win
+      player_hand << deck_o_cards.draw
+      player_total_value
+      show_hand
+      puts "#{player_value} with #{phand}"
+      player_ace_choice
       unless blackjack! || bust! || player_six_win
-        player_hand << deck_o_cards.draw
-        player_total_value
-        show_hand
-        puts "#{player_value} with #{phand}"
-        player_ace_choice
-        unless blackjack! || bust! || player_six_win
-          puts 'Another (hit / stay)'
-          another = gets.chomp.downcase
-          hit(active_player) if another == 'hit'
-        end
+        puts 'Another (hit / stay)'
+        another = gets.chomp.downcase
+        player_hit if another == 'hit'
       end
-    else
-      dealer_hit
     end
   end
 
   def dealer_hit
     show_dealer_hand
     puts "The dealer shows: #{final_dealer_hand}"
+    puts "(return to continue)"
     gets
     dealer_hand << deck_o_cards.draw
     puts 'The dealer takes a hit'
     puts 'The dealer is now showing:'
     puts dealer_hand
+    puts "(return to continue)"
     gets
   end
 
