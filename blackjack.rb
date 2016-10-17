@@ -61,34 +61,40 @@ class Game
     puts "You have #{player_value} with #{phand}."
     puts "The dealer shows #{dealer_hand[1]}"
     player_ace_choice
-    return unless blackjack? || bust?
-    puts 'Would you like a hit? (hit / stay)'
-    need = gets.chomp.downcase
-    player_hit if need == 'hit'
-    return unless blackjack? || bust? || player_six_win
-    dealer_turn
-    show_dealer_hand
+    unless blackjack? || bust?
+      puts 'Would you like a hit? (hit / stay)'
+      need = gets.chomp.downcase
+      player_hit if need == 'hit'
+    end
+    unless blackjack? || bust? || player_six_win
+      dealer_turn
+      show_dealer_hand
+    end
   end
 
   def dealer_turn
     dealer_total_value
-    return unless dealer_bust
-    return unless dealer_value < 16
-    dealer_hit
-    dealer_turn
+    unless dealer_bust
+      if dealer_value < 16
+        dealer_hit
+        dealer_turn
+      end
+    end
   end
 
   def player_hit
-    return unless blackjack? || bust? || player_six_win
-    player_hand << deck_o_cards.draw
-    player_total_value
-    show_hand
-    puts "#{player_value} with #{phand}"
-    player_ace_choice
-    return unless blackjack? || bust? || player_six_win
-    puts 'Another (hit / stay)'
-    another = gets.chomp.downcase
-    player_hit if another == 'hit'
+    unless blackjack? || bust? || player_six_win
+      player_hand << deck_o_cards.draw
+      player_total_value
+      show_hand
+      puts "#{player_value} with #{phand}"
+      player_ace_choice
+    end
+    unless blackjack? || bust? || player_six_win
+      puts 'Another (hit / stay)'
+      another = gets.chomp.downcase
+      player_hit if another == 'hit'
+    end
   end
 
   def dealer_hit
