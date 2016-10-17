@@ -32,7 +32,7 @@ class Game
   def play
     prepare_deck
     deal
-    rounds unless blackjack! || dealer_blackjack
+    rounds unless blackjack? || dealer_blackjack?
     winner
     rematch?
   end
@@ -61,14 +61,14 @@ class Game
     puts "You have #{player_value} with #{phand}."
     puts "The dealer shows #{dealer_hand[1]}"
     player_ace_choice
-    unless blackjack! || bust!
+    unless blackjack? || bust?
       puts 'Would you like a hit? (hit / stay)'
       need = gets.chomp.downcase
-      hit(player_hand) if need == 'hit'
-      unless blackjack! || bust! || player_six_win
-        dealer_turn
-        show_dealer_hand
-      end
+      player_hit if need == 'hit'
+    end
+    unless blackjack? || bust? || player_six_win
+      dealer_turn
+      show_dealer_hand
     end
   end
 
@@ -76,47 +76,45 @@ class Game
     dealer_total_value
     unless dealer_bust
       if dealer_value < 16
-        hit(dealer_hand)
+        dealer_hit
         dealer_turn
       end
     end
   end
 
-  def hit(active_player)
-    if active_player == player_hand
-      unless blackjack! || bust! || player_six_win
-        player_hand << deck_o_cards.draw
-        player_total_value
-        show_hand
-        puts "#{player_value} with #{phand}"
-        player_ace_choice
-        unless blackjack! || bust! || player_six_win
-          puts 'Another (hit / stay)'
-          another = gets.chomp.downcase
-          hit(active_player) if another == 'hit'
-        end
-      end
-    else
-      dealer_hit
+  def player_hit
+    unless blackjack? || bust? || player_six_win
+      player_hand << deck_o_cards.draw
+      player_total_value
+      show_hand
+      puts "#{player_value} with #{phand}"
+      player_ace_choice
+    end
+    unless blackjack? || bust? || player_six_win
+      puts 'Another (hit / stay)'
+      another = gets.chomp.downcase
+      player_hit if another == 'hit'
     end
   end
 
   def dealer_hit
     show_dealer_hand
     puts "The dealer shows: #{final_dealer_hand}"
+    puts '(return to continue)'
     gets
     dealer_hand << deck_o_cards.draw
     puts 'The dealer takes a hit'
     puts 'The dealer is now showing:'
     puts dealer_hand
+    puts '(return to continue)'
     gets
   end
 
-  def blackjack!
+  def blackjack?
     player_value == 21
   end
 
-  def bust!
+  def bust?
     player_value > 21
   end
 
@@ -128,17 +126,17 @@ class Game
     player_hand.length == 6 && player_value < 21
   end
 
-  def dealer_blackjack
+  def dealer_blackjack?
     dealer_value == 21
   end
 
   def winner
-    if blackjack!
+    if blackjack?
       puts 'Blackjack!!! You win!!!'
       self.blackjacks += 1
       self.win_tracker += 1
       final_hands
-    elsif bust!
+    elsif bust?
       puts 'Bust! Sorry you lose!'
       self.busts += 1
       self.loss_tracker += 1
@@ -169,13 +167,12 @@ class Game
       puts "You lose the tie with #{player_hand.length} cards."
       puts "The dealer had #{dealer_hand.length} cards!"
       self.loss_tracker += 1
-      final_hands
     else
       puts "You win the tie with #{player_hand.length} cards!"
       puts "The dealer had #{dealer_hand.length} cards."
       self.win_tracker += 1
-      final_hands
     end
+    final_hands
   end
 
   def final_hands
@@ -204,13 +201,12 @@ class Game
   end
 
   def player_ace_choice
-    while player_hand.include? "Ace"
-      puts "Would you like your Ace to be worth 1 or 11? (1 / 11)"
-      player_choice = gets.chomp
-      if player_choice == 1
-        card.value = 1
-      else
-        card.value = 11
+    player_hand.each do |card|
+      while card.face == 'Ace'
+        puts 'Would you like your Ace to be worth 1 or 11? (1 / 11)'
+        player_choice = gets.chomp
+        return unless player_choice == "1"
+          card.value = 1
       end
     end
   end

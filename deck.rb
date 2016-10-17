@@ -9,11 +9,12 @@ class Deck
 
   def create_deck
     self.card_holder = []
-      Card.faces.each do |face|
-        Card.suits.each do |suit|
-          card_holder << Card.new(face, suit)
-        end
+    Card.faces.each do |face|
+      Card.suits.each do |suit|
+        card_holder << Card.new(face, suit)
       end
+    end
+    shuffle_cards
   end
 
   def shuffle_cards
