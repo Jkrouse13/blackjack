@@ -62,35 +62,33 @@ class Game
     puts "The dealer shows #{dealer_hand[1]}"
     player_ace_choice
     return unless blackjack? || bust?
-      puts 'Would you like a hit? (hit / stay)'
-      need = gets.chomp.downcase
-      player_hit if need == 'hit'
-      return unless blackjack? || bust? || player_six_win
-        dealer_turn
-        show_dealer_hand
+    puts 'Would you like a hit? (hit / stay)'
+    need = gets.chomp.downcase
+    player_hit if need == 'hit'
+    return unless blackjack? || bust? || player_six_win
+    dealer_turn
+    show_dealer_hand
   end
 
   def dealer_turn
     dealer_total_value
-    unless dealer_bust
-      if dealer_value < 16
-        dealer_hit
-        dealer_turn
-      end
-    end
+    return unless dealer_bust
+    return unless dealer_value < 16
+    dealer_hit
+    dealer_turn
   end
 
   def player_hit
     return unless blackjack? || bust? || player_six_win
-      player_hand << deck_o_cards.draw
-      player_total_value
-      show_hand
-      puts "#{player_value} with #{phand}"
-      player_ace_choice
-      return unless blackjack? || bust? || player_six_win
-        puts 'Another (hit / stay)'
-        another = gets.chomp.downcase
-        player_hit if another == 'hit'
+    player_hand << deck_o_cards.draw
+    player_total_value
+    show_hand
+    puts "#{player_value} with #{phand}"
+    player_ace_choice
+    return unless blackjack? || bust? || player_six_win
+    puts 'Another (hit / stay)'
+    another = gets.chomp.downcase
+    player_hit if another == 'hit'
   end
 
   def dealer_hit
@@ -163,13 +161,12 @@ class Game
       puts "You lose the tie with #{player_hand.length} cards."
       puts "The dealer had #{dealer_hand.length} cards!"
       self.loss_tracker += 1
-      final_hands
     else
       puts "You win the tie with #{player_hand.length} cards!"
       puts "The dealer had #{dealer_hand.length} cards."
       self.win_tracker += 1
-      final_hands
     end
+    final_hands
   end
 
   def final_hands
@@ -198,14 +195,11 @@ class Game
   end
 
   def player_ace_choice
-    while player_hand.include? "Ace"
-      puts "Would you like your Ace to be worth 1 or 11? (1 / 11)"
+    while player_hand.include? 'Ace'
+      puts 'Would you like your Ace to be worth 1 or 11? (1 / 11)'
       player_choice = gets.chomp
-      if player_choice == 1
-        card.value = 1
-      else
-        card.value = 11
-      end
+      card.value =
+        1 if player_choice == 1
     end
   end
 
