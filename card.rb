@@ -18,13 +18,14 @@ class Card
   end
 
   def card_value
-    self.value = if face == 'Ace'
-                  11
-                elsif %w(King Queen Jack).include? face
-                  10
-                else
-                  face.to_i
-                end
+    self.value =
+      if face == 'Ace'
+        11
+      elsif %w(King Queen Jack).include? face
+        10
+      else
+        face.to_i
+      end
   end
 
   def >(other)

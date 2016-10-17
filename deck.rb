@@ -14,6 +14,7 @@ class Deck
         card_holder << Card.new(face, suit)
       end
     end
+    shuffle_cards
   end
 
   def shuffle_cards
