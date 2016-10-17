@@ -14,11 +14,10 @@ class Card
   def initialize(face, suit)
     self.face = face
     self.suit = suit
-    card_value
+    self.value = card_value
   end
 
   def card_value
-    self.value =
       if face == 'Ace'
         11
       elsif %w(King Queen Jack).include? face

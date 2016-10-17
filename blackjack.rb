@@ -201,11 +201,13 @@ class Game
   end
 
   def player_ace_choice
-    while player_hand.include? 'Ace'
-      puts 'Would you like your Ace to be worth 1 or 11? (1 / 11)'
-      player_choice = gets.chomp
-      card.value =
-        1 if player_choice == 1
+    player_hand.each do |card|
+      while card.face == 'Ace'
+        puts 'Would you like your Ace to be worth 1 or 11? (1 / 11)'
+        player_choice = gets.chomp
+        return unless player_choice == "1"
+          card.value = 1
+      end
     end
   end
 
